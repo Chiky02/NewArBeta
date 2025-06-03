@@ -1,39 +1,62 @@
 <!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>AR Turismo Ubaté</title>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AR Turismo Ubaté</title>
 
-    <!-- A-Frame y AR.js actualizado -->
-    <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/gh/AR-js-org/AR.js/aframe/build/aframe-ar.min.js"></script>
-  </head>
+  <!-- A-Frame (última versión estable compatible con AR.js) -->
+  <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
 
-  <body style="margin: 0; overflow: hidden">
-    <button id="change" style="position: absolute; z-index: 999; top: 10px; left: 10px;">
-      Cambiar
-    </button>
+  <!-- AR.js actualizado desde el repositorio oficial de AR-js-org -->
+  <script src="https://cdn.jsdelivr.net/gh/AR-js-org/AR.js/aframe/build/aframe-ar.min.js"></script>
 
-    <a-scene embedded arjs>
-      <a-marker type="pattern" url="pattern-parroquia_29-01-2020_45W0Q7H1kpbasilica%20santo%20cristo%20ubate.patt">
-        <a-entity id="img"
-                  gltf-model="proyecto_cultura.glb"
-                  scale="1 1 1"
-                  rotation="15 0 0"
-                  position="0 0 0">
-        </a-entity>
-      </a-marker>
+  <style>
+    body { margin: 0; overflow: hidden; }
+    #change {
+      position: absolute;
+      z-index: 999;
+      top: 10px;
+      left: 10px;
+      padding: 10px;
+      background: #fff;
+      border: none;
+      border-radius: 6px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+    }
+  </style>
+</head>
 
-      <a-entity camera></a-entity>
-    </a-scene>
+<body>
+  <!-- Botón para cambiar el modelo -->
+  <button id="change">Cambiar</button>
 
-    <script>
-      document.getElementById("change").addEventListener("click", function () {
-        const entity = document.getElementById("img");
-        entity.setAttribute("gltf-model", "Astronaut.glb");
-      });
-    </script>
-  </body>
+  <!-- Escena AR con marcador y modelo -->
+  <a-scene embedded arjs="sourceType: webcam; debugUIEnabled: false;" vr-mode-ui="enabled: false">
+    <!-- Marcador personalizado -->
+    <a-marker type="pattern" url="pattern-parroquia_29-01-2020_45W0Q7H1kpbasilica%20santo%20cristo%20ubate.patt">
+      
+      <!-- Modelo inicial -->
+      <a-entity id="img"
+        gltf-model="proyecto_cultura.glb"
+        scale="1 1 1"
+        position="0 0 0"
+        rotation="0 0 0">
+      </a-entity>
+
+    </a-marker>
+
+    <!-- Cámara controlada por A-Frame -->
+    <a-entity camera></a-entity>
+  </a-scene>
+
+  <script>
+    // Cambio de modelo al presionar el botón
+    document.getElementById("change").addEventListener("click", function () {
+      const entity = document.getElementById("img");
+      entity.setAttribute("gltf-model", "Astronaut.glb");
+    });
+  </script>
+</body>
 </html>
 
