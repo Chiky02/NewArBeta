@@ -1,47 +1,39 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AR Turismo Ubaté</title>
-<!-- A-Frame 1.2.0 (compatible) -->
-<script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AR Turismo Ubaté</title>
 
-<!-- AR.js para A-Frame (estable) -->
-<script src="https://cdn.jsdelivr.net/gh/AR-js-org/AR.js/aframe/build/aframe-ar.min.js"></script>
-</head>
+    <!-- A-Frame y AR.js actualizado -->
+    <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/AR-js-org/AR.js/aframe/build/aframe-ar.min.js"></script>
+  </head>
 
-<body style="margin: 0; overflow: hidden;">
-  <!-- Botón flotante -->
-  <button id="change" style="position: absolute; z-index: 999; top: 10px; left: 10px;">
-    Cambiar 
-  </button>
-  <a-scene >
-    <a-entity scale="0.2 0.2 0.2">
-      <!-- Modelo GLB con id para acceder desde JS -->
-      <a-entity id="img"
-        gltf-model="proyecto_cultura.glb"
-        scale="8 8 8"
-        crossOrigin="anonymous"
-        rotation="15 0 0"
-        position="0 0 0">
+  <body style="margin: 0; overflow: hidden">
+    <button id="change" style="position: absolute; z-index: 999; top: 10px; left: 10px;">
+      Cambiar
+    </button>
 
-      </a-entity>
-    </a-entity>
+    <a-scene embedded arjs>
+      <a-marker type="pattern" url="pattern-parroquia_29-01-2020_45W0Q7H1kpbasilica%20santo%20cristo%20ubate.patt">
+        <a-entity id="img"
+                  gltf-model="proyecto_cultura.glb"
+                  scale="1 1 1"
+                  rotation="15 0 0"
+                  position="0 0 0">
+        </a-entity>
+      </a-marker>
 
-    <!-- Cámara AR con marcador -->
-    <a-marker-camera type="pattern" url="pattern-parroquia_29-01-2020_45W0Q7H1kpbasilica santo cristo ubate.patt"></a-marker-camera>
-  </a-scene>
+      <a-entity camera></a-entity>
+    </a-scene>
 
-  <!-- Script del botón -->
-  <script>
-    document.getElementById("change").addEventListener("click", function () {
-      const entity = document.getElementById("img");
-     
-      // Cambiar el modelo a otro .glb
-      entity.setAttribute("gltf-model", "Astronaut.glb");
-      
-    });
-  </script>
-</body>
+    <script>
+      document.getElementById("change").addEventListener("click", function () {
+        const entity = document.getElementById("img");
+        entity.setAttribute("gltf-model", "Astronaut.glb");
+      });
+    </script>
+  </body>
 </html>
+
