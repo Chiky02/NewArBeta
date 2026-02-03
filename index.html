@@ -17,6 +17,7 @@
       font-family: sans-serif;
     }
 
+    /* Botón cambiar modelo con transición de giro */
     #change {
       position: absolute;
       bottom: 20px;
@@ -28,6 +29,8 @@
       border-radius: 25px;
       font-weight: bold;
       cursor: pointer;
+      transition: transform 0.5s ease;
+      /* Transición para el giro */
     }
 
     .controls {
@@ -40,6 +43,7 @@
       z-index: 1000;
     }
 
+    /* Contenedores de botones con transición de giro */
     .control-group {
       display: flex;
       flex-direction: column;
@@ -48,6 +52,8 @@
       padding: 10px;
       border-radius: 20px;
       box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+      transition: transform 0.5s ease;
+      /* Transición para el giro */
     }
 
     .grid-rotation {
@@ -92,7 +98,7 @@
 
 <body>
   <div class="controls">
-    <div class="control-group">
+    <div class="control-group rotate-me">
       <span class="label">Tamaño</span>
       <div style="display: flex; gap: 5px; margin-top: 5px;">
         <button class="btn-ctrl" onclick="adjustScale(1.1)">+</button>
@@ -100,7 +106,7 @@
       </div>
     </div>
 
-    <div class="control-group">
+    <div class="control-group rotate-me">
       <span class="label">Rotación</span>
       <div class="grid-rotation">
         <div></div>
@@ -114,7 +120,7 @@
     </div>
   </div>
 
-  <button id="change">CAMBIAR MODELO</button>
+  <button id="change" class="rotate-me">CAMBIAR MODELO</button>
 
   <a-scene embedded vr-mode-ui="enabled: false"
     arjs="sourceType: webcam; debugUIEnabled: false; displayWidth: 1280; displayHeight: 720; fitWebcamToWindow: true;">
@@ -149,23 +155,16 @@
       modelEntity.setAttribute("scale", { x: s.x * factor, y: s.y * factor, z: s.z * factor });
     }
 
-    /**
-     * AJUSTE DE ROTACIÓN
-     * Eje X: Inclinación (arriba/abajo)
-     * Eje Y: Giro horizontal (sobre su propio eje vertical)
-     */
     function adjustRotation(axis, angle) {
-      // Obtenemos la rotación actual como un objeto
       let r = modelEntity.getAttribute("rotation");
-
       if (axis === 'x') {
-        // Modifica la inclinación sin tocar el giro lateral
         modelEntity.setAttribute("rotation", { x: r.x + angle, y: r.y, z: r.z });
       } else if (axis === 'y') {
-        // Modifica el giro lateral manteniendo la inclinación actual
+        // Mantenemos tu lógica de eje Z para el giro horizontal
         modelEntity.setAttribute("rotation", { x: r.x, y: r.y, z: r.z + -angle });
       }
     }
+
 
     function resizeAR() {
       const video = document.querySelector('#arjs-video');
@@ -174,9 +173,15 @@
         video.style.height = window.innerHeight + 'px';
         video.style.objectFit = 'cover';
       }
+      // Actualizar giro al redimensionar
     }
 
     window.addEventListener('resize', resizeAR);
+    window.addEventListener('orientationchange', () => {
+      // Pequeño delay para que el navegador actualice window.orientation
+
+    });
+
     setTimeout(resizeAR, 2000);
   </script>
 </body>
