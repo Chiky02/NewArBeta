@@ -30,7 +30,6 @@
       cursor: pointer;
     }
 
-    /* Controles laterales */
     .controls {
       position: absolute;
       right: 15px;
@@ -54,7 +53,6 @@
     .grid-rotation {
       display: grid;
       grid-template-columns: repeat(3, 40px);
-      grid-template-rows: repeat(2, 40px);
       gap: 5px;
       margin-top: 5px;
     }
@@ -105,8 +103,11 @@
     <div class="control-group">
       <span class="label">Rotación</span>
       <div class="grid-rotation">
-        <button class="btn-ctrl" style="grid-column: 2" onclick="adjustRotation('x', -15)">▲</button>
-        <span></span> <button class="btn-ctrl" onclick="adjustRotation('y', -15)">◀</button>
+        <div></div>
+        <button class="btn-ctrl" onclick="adjustRotation('x', -15)">▲</button>
+        <div></div>
+
+        <button class="btn-ctrl" onclick="adjustRotation('y', -15)">◀</button>
         <button class="btn-ctrl" onclick="adjustRotation('x', 15)">▼</button>
         <button class="btn-ctrl" onclick="adjustRotation('y', 15)">▶</button>
       </div>
@@ -140,7 +141,6 @@
         modelEntity.setAttribute("scale", "1 1 1");
       }
       isOriginal = !isOriginal;
-      // Reset de rotación al cambiar modelo para evitar desorientación
       modelEntity.setAttribute("rotation", "0 0 0");
     });
 
@@ -149,13 +149,21 @@
       modelEntity.setAttribute("scale", { x: s.x * factor, y: s.y * factor, z: s.z * factor });
     }
 
-    // Nueva función para rotar en múltiples ejes
+    /**
+     * AJUSTE DE ROTACIÓN
+     * Eje X: Inclinación (arriba/abajo)
+     * Eje Y: Giro horizontal (sobre su propio eje vertical)
+     */
     function adjustRotation(axis, angle) {
-      const r = modelEntity.getAttribute("rotation");
+      // Obtenemos la rotación actual como un objeto
+      let r = modelEntity.getAttribute("rotation");
+
       if (axis === 'x') {
+        // Modifica la inclinación sin tocar el giro lateral
         modelEntity.setAttribute("rotation", { x: r.x + angle, y: r.y, z: r.z });
       } else if (axis === 'y') {
-        modelEntity.setAttribute("rotation", { x: r.x, y: r.y + angle, z: r.z });
+        // Modifica el giro lateral manteniendo la inclinación actual
+        modelEntity.setAttribute("rotation", { x: r.x, y: r.y, z: r.z + -angle });
       }
     }
 
