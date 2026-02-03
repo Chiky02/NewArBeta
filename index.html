@@ -14,39 +14,112 @@
       margin: 0;
       overflow: hidden;
       background: #000;
+      font-family: sans-serif;
     }
 
     #change {
       position: absolute;
       bottom: 20px;
-      left: 50%;
-      transform: translateX(-50%);
+      left: 20px;
       z-index: 1000;
-      padding: 12px 24px;
+      padding: 12px 20px;
       background: white;
       border: 2px solid #333;
       border-radius: 25px;
       font-weight: bold;
+      cursor: pointer;
     }
 
-    /* Estilo para asegurar que el canvas no se deforme */
+    /* Controles laterales */
+    .controls {
+      position: absolute;
+      right: 15px;
+      bottom: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      z-index: 1000;
+    }
+
+    .control-group {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      background: rgba(255, 255, 255, 0.8);
+      padding: 10px;
+      border-radius: 20px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    }
+
+    .grid-rotation {
+      display: grid;
+      grid-template-columns: repeat(3, 40px);
+      grid-template-rows: repeat(2, 40px);
+      gap: 5px;
+      margin-top: 5px;
+    }
+
+    .btn-ctrl {
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      border: 1px solid #333;
+      background: white;
+      font-size: 18px;
+      font-weight: bold;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .btn-ctrl:active {
+      background: #ccc;
+    }
+
+    .label {
+      font-size: 9px;
+      text-transform: uppercase;
+      font-weight: bold;
+      color: #333;
+    }
+
     canvas {
       width: 100% !important;
       height: 100% !important;
       object-fit: contain;
-      /* Mantiene la proporción sin estirar, ideal para calidad alta */
     }
   </style>
 </head>
 
 <body>
+  <div class="controls">
+    <div class="control-group">
+      <span class="label">Tamaño</span>
+      <div style="display: flex; gap: 5px; margin-top: 5px;">
+        <button class="btn-ctrl" onclick="adjustScale(1.1)">+</button>
+        <button class="btn-ctrl" onclick="adjustScale(0.9)">-</button>
+      </div>
+    </div>
+
+    <div class="control-group">
+      <span class="label">Rotación</span>
+      <div class="grid-rotation">
+        <button class="btn-ctrl" style="grid-column: 2" onclick="adjustRotation('x', -15)">▲</button>
+        <span></span> <button class="btn-ctrl" onclick="adjustRotation('y', -15)">◀</button>
+        <button class="btn-ctrl" onclick="adjustRotation('x', 15)">▼</button>
+        <button class="btn-ctrl" onclick="adjustRotation('y', 15)">▶</button>
+      </div>
+    </div>
+  </div>
+
   <button id="change">CAMBIAR MODELO</button>
 
   <a-scene embedded vr-mode-ui="enabled: false"
-    arjs="sourceType: webcam; debugUIEnabled: false; displayWidth: 1280; displayHeight: 720; fitWebcamToWindow: true; trackingMethod: best;">
+    arjs="sourceType: webcam; debugUIEnabled: false; displayWidth: 1280; displayHeight: 720; fitWebcamToWindow: true;">
 
     <a-marker type="pattern" url="pattern-parroquia_29-01-2020_45W0Q7H1kpbasilica%20santo%20cristo%20ubate.patt">
-      <a-entity id="img" gltf-model="proyecto_cultura.glb" scale="3 3 3" position="0 0 0" rotation="0 0 0">
+      <a-entity id="img" gltf-model="proyecto_cultura.glb" scale="1 1 1" position="0 0 0" rotation="0 0 0">
       </a-entity>
     </a-marker>
 
@@ -67,16 +140,28 @@
         modelEntity.setAttribute("scale", "1 1 1");
       }
       isOriginal = !isOriginal;
+      // Reset de rotación al cambiar modelo para evitar desorientación
+      modelEntity.setAttribute("rotation", "0 0 0");
     });
 
-    // Función crítica para recalcular el tamaño sin deformar
-    function resizeAR() {
-      const scene = document.querySelector('a-scene');
-      const container = scene.parentElement;
-      const video = document.querySelector('#arjs-video');
+    function adjustScale(factor) {
+      const s = modelEntity.getAttribute("scale");
+      modelEntity.setAttribute("scale", { x: s.x * factor, y: s.y * factor, z: s.z * factor });
+    }
 
+    // Nueva función para rotar en múltiples ejes
+    function adjustRotation(axis, angle) {
+      const r = modelEntity.getAttribute("rotation");
+      if (axis === 'x') {
+        modelEntity.setAttribute("rotation", { x: r.x + angle, y: r.y, z: r.z });
+      } else if (axis === 'y') {
+        modelEntity.setAttribute("rotation", { x: r.x, y: r.y + angle, z: r.z });
+      }
+    }
+
+    function resizeAR() {
+      const video = document.querySelector('#arjs-video');
       if (video) {
-        // Forzamos que el video no se estire manualmente
         video.style.width = window.innerWidth + 'px';
         video.style.height = window.innerHeight + 'px';
         video.style.objectFit = 'cover';
@@ -84,7 +169,6 @@
     }
 
     window.addEventListener('resize', resizeAR);
-    // Ejecutar después de un momento para asegurar que AR.js cargó el video
     setTimeout(resizeAR, 2000);
   </script>
 </body>
