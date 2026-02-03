@@ -10,34 +10,31 @@
   <script src="https://cdn.jsdelivr.net/gh/AR-js-org/AR.js/aframe/build/aframe-ar.min.js"></script>
 
   <style>
-    /* Eliminamos márgenes para que la cámara ocupe el 100% */
     body {
       margin: 0;
       overflow: hidden;
-      width: 100vw;
-      height: 100vh;
-      font-family: sans-serif;
+      background: #000;
     }
 
-    /* Botón flotante con mejor diseño para móviles */
     #change {
       position: absolute;
-      bottom: 30px;
-      /* Movido abajo para que sea más fácil de tocar con el pulgar */
+      bottom: 20px;
       left: 50%;
       transform: translateX(-50%);
-      z-index: 999;
-      padding: 15px 30px;
-      background: rgba(255, 255, 255, 0.9);
+      z-index: 1000;
+      padding: 12px 24px;
+      background: white;
       border: 2px solid #333;
-      border-radius: 50px;
+      border-radius: 25px;
       font-weight: bold;
-      cursor: pointer;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
     }
 
-    #change:active {
-      background: #eee;
+    /* Estilo para asegurar que el canvas no se deforme */
+    canvas {
+      width: 100% !important;
+      height: 100% !important;
+      object-fit: contain;
+      /* Mantiene la proporción sin estirar, ideal para calidad alta */
     }
   </style>
 </head>
@@ -45,21 +42,18 @@
 <body>
   <button id="change">CAMBIAR MODELO</button>
 
-  <a-scene vr-mode-ui="enabled: false"
-    arjs="sourceType: webcam; debugUIEnabled: false; detectionMode: mono_and_matrix; matrixCodeType: 3x3;">
+  <a-scene embedded vr-mode-ui="enabled: false"
+    arjs="sourceType: webcam; debugUIEnabled: false; displayWidth: 1280; displayHeight: 720; fitWebcamToWindow: true; trackingMethod: best;">
 
     <a-marker type="pattern" url="pattern-parroquia_29-01-2020_45W0Q7H1kpbasilica%20santo%20cristo%20ubate.patt">
-
-      <a-entity id="img" gltf-model="proyecto_cultura.glb" scale="1 1 1" position="0 0 0" rotation="0 0 0">
+      <a-entity id="img" gltf-model="proyecto_cultura.glb" scale="3 3 3" position="0 0 0" rotation="0 0 0">
       </a-entity>
-
     </a-marker>
 
     <a-entity camera></a-entity>
   </a-scene>
 
   <script>
-    // Lógica para alternar entre modelos
     const btn = document.getElementById("change");
     const modelEntity = document.getElementById("img");
     let isOriginal = true;
@@ -67,7 +61,6 @@
     btn.addEventListener("click", function () {
       if (isOriginal) {
         modelEntity.setAttribute("gltf-model", "Astronaut.glb");
-        // Puedes ajustar la escala si el astronauta es muy pequeño o grande
         modelEntity.setAttribute("scale", "0.5 0.5 0.5");
       } else {
         modelEntity.setAttribute("gltf-model", "proyecto_cultura.glb");
@@ -76,12 +69,23 @@
       isOriginal = !isOriginal;
     });
 
-    // Pequeño hack para forzar el resize en móviles al cargar
-    window.addEventListener('load', () => {
-      setTimeout(() => {
-        window.dispatchEvent(new Event('resize'));
-      }, 1000);
-    });
+    // Función crítica para recalcular el tamaño sin deformar
+    function resizeAR() {
+      const scene = document.querySelector('a-scene');
+      const container = scene.parentElement;
+      const video = document.querySelector('#arjs-video');
+
+      if (video) {
+        // Forzamos que el video no se estire manualmente
+        video.style.width = window.innerWidth + 'px';
+        video.style.height = window.innerHeight + 'px';
+        video.style.objectFit = 'cover';
+      }
+    }
+
+    window.addEventListener('resize', resizeAR);
+    // Ejecutar después de un momento para asegurar que AR.js cargó el video
+    setTimeout(resizeAR, 2000);
   </script>
 </body>
 
