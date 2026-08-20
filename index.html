@@ -4,123 +4,109 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
   <title>AR Turismo Ubaté</title>
+
+  <link rel="stylesheet" href="css/styles.css" />
 
   <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
   <script src="https://cdn.jsdelivr.net/gh/AR-js-org/AR.js/aframe/build/aframe-ar.min.js"></script>
-
-  <style>
-    body {
-      margin: 0;
-      overflow: hidden;
-      background: #000;
-      font-family: sans-serif;
-    }
-
-    /* Botón cambiar modelo con transición de giro */
-    #change {
-      position: absolute;
-      bottom: 20px;
-      left: 20px;
-      z-index: 1000;
-      padding: 12px 20px;
-      background: white;
-      border: 2px solid #333;
-      border-radius: 25px;
-      font-weight: bold;
-      cursor: pointer;
-      transition: transform 0.5s ease;
-      /* Transición para el giro */
-    }
-
-    .controls {
-      position: absolute;
-      right: 15px;
-      bottom: 20px;
-      display: flex;
-      flex-direction: column;
-      gap: 15px;
-      z-index: 1000;
-    }
-
-    /* Contenedores de botones con transición de giro */
-    .control-group {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      background: rgba(255, 255, 255, 0.8);
-      padding: 10px;
-      border-radius: 20px;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-      transition: transform 0.5s ease;
-      /* Transición para el giro */
-    }
-
-    .grid-rotation {
-      display: grid;
-      grid-template-columns: repeat(3, 40px);
-      gap: 5px;
-      margin-top: 5px;
-    }
-
-    .btn-ctrl {
-      width: 40px;
-      height: 40px;
-      border-radius: 10px;
-      border: 1px solid #333;
-      background: white;
-      font-size: 18px;
-      font-weight: bold;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .btn-ctrl:active {
-      background: #ccc;
-    }
-
-    .label {
-      font-size: 9px;
-      text-transform: uppercase;
-      font-weight: bold;
-      color: #333;
-    }
-
-    canvas {
-      width: 100% !important;
-      height: 100% !important;
-      object-fit: contain;
-    }
-  </style>
 </head>
 
 <body>
-  <div class="controls">
-    <div class="control-group rotate-me">
-      <span class="label">Tamaño</span>
-      <div style="display: flex; gap: 5px; margin-top: 5px;">
-        <button class="btn-ctrl" onclick="adjustScale(1.1)">+</button>
-        <button class="btn-ctrl" onclick="adjustScale(0.9)">-</button>
-      </div>
+  <div class="top-bar">
+    <div class="brand">
+      <strong>AR Turismo Ubaté</strong>
     </div>
+    <div class="top-actions">
+      <button type="button" class="action-btn primary" id="btn-instructions" aria-label="Ver instrucciones">
+        Instrucciones
+      </button>
+    </div>
+  </div>
 
-    <div class="control-group rotate-me">
-      <span class="label">Rotación</span>
-      <div class="grid-rotation">
-        <div></div>
-        <button class="btn-ctrl" onclick="adjustRotation('x', -15)">▲</button>
-        <div></div>
+  <div class="dock" id="controls-dock">
+    <button type="button" class="dock-toggle" id="dock-toggle" aria-expanded="false" aria-controls="dock-panel">
+      <span class="dock-handle" aria-hidden="true"></span>
+      <span class="dock-toggle-text" id="dock-toggle-text">Mostrar controles</span>
+    </button>
 
-        <button class="btn-ctrl" onclick="adjustRotation('y', -15)">◀</button>
-        <button class="btn-ctrl" onclick="adjustRotation('x', 15)">▼</button>
-        <button class="btn-ctrl" onclick="adjustRotation('y', 15)">▶</button>
+    <div class="dock-sheet" id="dock-panel" aria-label="Controles del modelo">
+      <div class="dock-inner">
+        <div class="control-group">
+          <span class="label">Mover</span>
+          <div class="grid-pad">
+            <button type="button" class="btn-ctrl ghost" tabindex="-1" aria-hidden="true"></button>
+            <button type="button" class="btn-ctrl" data-action="position" data-axis="z" data-value="-0.1" title="Adelante">▲</button>
+            <button type="button" class="btn-ctrl ghost" tabindex="-1" aria-hidden="true"></button>
+            <button type="button" class="btn-ctrl" data-action="position" data-axis="x" data-value="-0.1" title="Izquierda">◀</button>
+            <button type="button" class="btn-ctrl" data-action="position" data-axis="y" data-value="0.1" title="Subir">⬆</button>
+            <button type="button" class="btn-ctrl" data-action="position" data-axis="x" data-value="0.1" title="Derecha">▶</button>
+            <button type="button" class="btn-ctrl" data-action="position" data-axis="y" data-value="-0.1" title="Bajar">⬇</button>
+            <button type="button" class="btn-ctrl" data-action="position" data-axis="z" data-value="0.1" title="Atrás">▼</button>
+            <button type="button" class="btn-ctrl" data-action="reset" title="Restablecer">↺</button>
+          </div>
+        </div>
+
+        <div class="control-divider" aria-hidden="true"></div>
+
+        <div class="control-group compact">
+          <span class="label">Tamaño</span>
+          <div class="row">
+            <button type="button" class="btn-ctrl" data-action="scale" data-value="1.1">+</button>
+            <button type="button" class="btn-ctrl" data-action="scale" data-value="0.9">−</button>
+          </div>
+        </div>
+
+        <div class="control-divider" aria-hidden="true"></div>
+
+        <div class="control-group">
+          <span class="label">Rotar</span>
+          <div class="grid-pad grid-pad-sm">
+            <button type="button" class="btn-ctrl ghost" tabindex="-1" aria-hidden="true"></button>
+            <button type="button" class="btn-ctrl" data-action="rotation" data-axis="x" data-value="-15">▲</button>
+            <button type="button" class="btn-ctrl ghost" tabindex="-1" aria-hidden="true"></button>
+            <button type="button" class="btn-ctrl" data-action="rotation" data-axis="y" data-value="-15">◀</button>
+            <button type="button" class="btn-ctrl" data-action="rotation" data-axis="x" data-value="15">▼</button>
+            <button type="button" class="btn-ctrl" data-action="rotation" data-axis="y" data-value="15">▶</button>
+          </div>
+        </div>
       </div>
     </div>
   </div>
 
-  <button id="change" class="rotate-me">CAMBIAR MODELO</button>
+  <div class="modal-backdrop" id="instructions-modal" role="dialog" aria-modal="true" aria-labelledby="instructions-title">
+    <div class="modal">
+      <header>
+        <h2 id="instructions-title">Cómo usar la experiencia</h2>
+        <p>Sigue estos pasos para ver el modelo en realidad aumentada.</p>
+      </header>
+
+      <ol class="steps">
+        <li>Descarga o imprime el marcador de la Basílica.</li>
+        <li>Colócalo en una superficie plana y bien iluminada.</li>
+        <li>Apunta la cámara al marcador hasta que aparezca el modelo.</li>
+        <li>Despliega la barra de abajo para mover, rotar o cambiar el tamaño del modelo.</li>
+      </ol>
+
+      <div class="preview">
+        <img src="marcador-basilica.png" alt="Marcador de la Basílica del Santo Cristo de Ubaté" />
+      </div>
+      <p class="preview-caption">Este es el marcador que debes descargar o imprimir.</p>
+
+      <div class="actions">
+        <a class="action-btn primary" id="download-marker" href="marcador-basilica.png" download="marcador-basilica-ubate.png">
+          Descargar marcador
+        </a>
+        <button type="button" class="action-btn" id="print-marker-btn">Imprimir</button>
+        <button type="button" class="action-btn" id="close-instructions-modal">Entendido</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="print-marker">
+    <img src="marcador-basilica.png" alt="Marcador AR Basílica Ubaté" />
+  </div>
 
   <a-scene embedded vr-mode-ui="enabled: false"
     arjs="sourceType: webcam; debugUIEnabled: false; displayWidth: 1280; displayHeight: 720; fitWebcamToWindow: true;">
@@ -133,57 +119,7 @@
     <a-entity camera></a-entity>
   </a-scene>
 
-  <script>
-    const btn = document.getElementById("change");
-    const modelEntity = document.getElementById("img");
-    let isOriginal = true;
-
-    btn.addEventListener("click", function () {
-      if (isOriginal) {
-        modelEntity.setAttribute("gltf-model", "Astronaut.glb");
-        modelEntity.setAttribute("scale", "0.5 0.5 0.5");
-      } else {
-        modelEntity.setAttribute("gltf-model", "proyecto_cultura.glb");
-        modelEntity.setAttribute("scale", "1 1 1");
-      }
-      isOriginal = !isOriginal;
-      modelEntity.setAttribute("rotation", "0 0 0");
-    });
-
-    function adjustScale(factor) {
-      const s = modelEntity.getAttribute("scale");
-      modelEntity.setAttribute("scale", { x: s.x * factor, y: s.y * factor, z: s.z * factor });
-    }
-
-    function adjustRotation(axis, angle) {
-      let r = modelEntity.getAttribute("rotation");
-      if (axis === 'x') {
-        modelEntity.setAttribute("rotation", { x: r.x + angle, y: r.y, z: r.z });
-      } else if (axis === 'y') {
-        // Mantenemos tu lógica de eje Z para el giro horizontal
-        modelEntity.setAttribute("rotation", { x: r.x, y: r.y, z: r.z + -angle });
-      }
-    }
-
-
-    function resizeAR() {
-      const video = document.querySelector('#arjs-video');
-      if (video) {
-        video.style.width = window.innerWidth + 'px';
-        video.style.height = window.innerHeight + 'px';
-        video.style.objectFit = 'cover';
-      }
-      // Actualizar giro al redimensionar
-    }
-
-    window.addEventListener('resize', resizeAR);
-    window.addEventListener('orientationchange', () => {
-      // Pequeño delay para que el navegador actualice window.orientation
-
-    });
-
-    setTimeout(resizeAR, 2000);
-  </script>
+  <script src="js/app.js"></script>
 </body>
 
 </html>
