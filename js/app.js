@@ -10,7 +10,6 @@
 
   const models = [
     { src: "proyecto_cultura.glb", scale: { x: 1, y: 1, z: 1 }, label: "Cultura Ubaté" },
-    { src: "churche.glb", scale: { x: 0.8, y: 0.8, z: 0.8 }, label: "Basílica 3D" },
     { src: "Astronaut.glb", scale: { x: 0.5, y: 0.5, z: 0.5 }, label: "Astronauta" }
   ];
 
