@@ -2,16 +2,39 @@
   "use strict";
 
   const modelEntity = document.getElementById("img");
+  const btnModel = document.getElementById("btn-model");
   const markerModal = document.getElementById("instructions-modal");
   const btnInstructions = document.getElementById("btn-instructions");
   const closeInstructionsModal = document.getElementById("close-instructions-modal");
   const printMarkerBtn = document.getElementById("print-marker-btn");
 
+  const models = [
+    { src: "proyecto_cultura.glb", scale: { x: 1, y: 1, z: 1 }, label: "Cultura Ubaté" },
+    { src: "churche.glb", scale: { x: 0.8, y: 0.8, z: 0.8 }, label: "Basílica 3D" },
+    { src: "Astronaut.glb", scale: { x: 0.5, y: 0.5, z: 0.5 }, label: "Astronauta" }
+  ];
+
+  let modelIndex = 0;
+
   const defaults = {
     position: { x: 0, y: 0, z: 0 },
-    rotation: { x: 0, y: 0, z: 0 },
-    scale: { x: 1, y: 1, z: 1 }
+    rotation: { x: 0, y: 0, z: 0 }
   };
+
+  function currentModel() {
+    return models[modelIndex];
+  }
+
+  function applyModel(index) {
+    modelIndex = index;
+    const next = currentModel();
+    modelEntity.setAttribute("gltf-model", next.src);
+    modelEntity.setAttribute("scale", { ...next.scale });
+    modelEntity.setAttribute("position", { ...defaults.position });
+    modelEntity.setAttribute("rotation", { ...defaults.rotation });
+    btnModel.title = next.label;
+    btnModel.setAttribute("aria-label", "Cambiar modelo: " + next.label);
+  }
 
   function adjustScale(factor) {
     const s = modelEntity.getAttribute("scale");
@@ -40,9 +63,10 @@
   }
 
   function resetTransform() {
+    const model = currentModel();
     modelEntity.setAttribute("position", { ...defaults.position });
     modelEntity.setAttribute("rotation", { ...defaults.rotation });
-    modelEntity.setAttribute("scale", { ...defaults.scale });
+    modelEntity.setAttribute("scale", { ...model.scale });
   }
 
   function openInstructionsModal() {
@@ -84,6 +108,10 @@
   }
 
   bindControlButtons();
+
+  btnModel.addEventListener("click", function () {
+    applyModel((modelIndex + 1) % models.length);
+  });
 
   btnInstructions.addEventListener("click", openInstructionsModal);
   closeInstructionsModal.addEventListener("click", closeModal);
