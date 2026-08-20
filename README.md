@@ -19,7 +19,7 @@ Construido con [A-Frame](https://aframe.io/) y [AR.js](https://ar-js-org.github.
 3. Coloca el marcador en una superficie plana, bien iluminada y sin arrugas.
 4. Permite el acceso a la cámara y apunta al marcador.
 5. Cuando se detecte el patrón:
-   - **Modelo** (arriba) alterna entre Cultura Ubaté, Basílica 3D y Astronauta
+   - **Modelo** (en controles, encima de Tamaño) alterna entre Cultura Ubaté, Basílica 3D y Astronauta
    - **Mover** desplaza el modelo en X / Y / Z (`↺` restablece posición, rotación y escala)
    - **Tamaño** acerca o aleja el modelo
    - **Rotar** lo gira sobre los ejes visibles
